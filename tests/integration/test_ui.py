@@ -1,6 +1,6 @@
 import pytest
 
-pytest.importorskip("PySide6")
+pytest.importorskip("PySide6.QtWidgets", reason="Qt недоступен в этой среде")
 
 
 def test_ui_opens_and_renders(site):
