@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "landscape-renderer"
+version = "0.1.0"
+description = "Open-source hand-rendering for landscape design plans: DXF/DWG in, pen / marker / watercolour presentation out"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26",
+  "opencv-python-headless>=4.9",
+  "Pillow>=10",
+  "ezdxf>=1.3",
+]
+
+[project.optional-dependencies]
+ui = ["PySide6>=6.6"]
+dev = ["pytest>=8", "PySide6>=6.6"]
+
+[project.scripts]
+landscape-renderer = "landscape_renderer.cli:main"
+
+[project.gui-scripts]
+landscape-renderer-ui = "landscape_renderer.ui.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

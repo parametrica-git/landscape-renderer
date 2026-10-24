@@ -5,7 +5,7 @@
 
 *An open-source hand-rendering tool for landscape design plans: CAD drawing in → pen, marker, watercolour or pencil presentation out. Spiritual successor of Autodesk Impression.*
 
-> **Статус: проектирование + рабочий прототип.** Полное ТЗ — [`docs/SPEC.md`](docs/SPEC.md).
+> **Статус: v0.1 — каркас MVP.** Полное ТЗ — [`docs/SPEC.md`](docs/SPEC.md).
 
 | Исходник в CAD | Перо + акварель | Перо + маркер |
 |---|---|---|
@@ -21,17 +21,38 @@
 
 Всё работает локально: чертежи никуда не отправляются.
 
-## Попробовать прототип
+## Установка и запуск
 
 ```bash
-cd prototype
-pip install -r requirements.txt
-python read_dwg.py ../tests/fixtures/dxf/simple_site.dxf pero_akvarel pero_marker
-# результат: prototype/out/from_dwg_*.jpg
+git clone https://github.com/parametrica-git/landscape-renderer
+cd landscape-renderer
+pip install -e ".[ui]"
+
+landscape-renderer-ui tests/fixtures/dxf/simple_site.dxf          # окно
+landscape-renderer layouts  tests/fixtures/dxf/simple_site.dxf    # листы и видовые экраны
+landscape-renderer report   tests/fixtures/dxf/simple_site.dxf    # что с чем сопоставлено
+landscape-renderer render   tests/fixtures/dxf/simple_site.dxf --style pero_akvarel --pdf --dxf-bundle --out export
 ```
 
-Стили: `pero`, `karandash`, `pastel`, `akvarel`, `pero_akvarel`, `pero_marker`.
-Свой чертёж: сохраните его как DXF и назовите слои/блоки как в `tests/fixtures/dxf/simple_site.dxf` (настраиваемые профили — в плане MVP).
+![Окно](docs/images/ui_1.png)
+
+**Окно:** слева — лист, видовой экран и таблица «слой / блок → элемент подачи» со статусами ✓ подтверждено / ? предложено / ✗ не сопоставлено (класс можно сменить прямо в таблице); в центре — превью; справа — техника, свет, тени, вариация, DPI. Двойной щелчок по дереву на превью — карточка объекта: проектный статус (существующее / новое / удаляемое), другой вариант, скрыть. Правки сохраняются в проекте `.lscapeproj` и переживают обновление чертежа.
+
+**Экспорт:** PNG и PDF с точным размером листа и DPI; **DXF-комплект** — копия чертежа с подачей, вставленной в лист по границам видового экрана (слой `LANDSCAPE_RENDER`), и PNG рядом. Исходный чертёж не изменяется.
+
+**DWG:** откройте DXF (в AutoCAD «Сохранить как → DXF»). Если установлен AutoCAD, программа попробует конвертировать DWG сама через `accoreconsole`. ODA File Converter включается только флагом `--allow-oda`: без членства в ODA он разрешён лишь для некоммерческого использования.
+
+**Свой чертёж:** профиль сопоставления — JSON с правилами по слоям, блокам и атрибутам; пример — [`packs/profiles/ru-landscape-starter.json`](packs/profiles/ru-landscape-starter.json). Скопируйте его и поменяйте имена слоёв под своё бюро.
+
+### Что уже есть (v0.1)
+- чтение DXF: листы, видовые экраны, масштаб, единицы, видимость слоёв, блоки с атрибутами, штриховки, тексты;
+- профили сопоставления: glob / regex, приоритет и специфичность, конфликты, ручные назначения, статусы, автоподбор по синонимам RU/EN;
+- граф сцены в метрах листа; переопределения объектов с переносом по «отпечатку», если handle изменился;
+- процедурный CPU-рендер, 6 техник, единый свет и тени, статусы «новое / удаляемое», надписи из CAD поверх;
+- экспорт PNG / PDF / DXF-комплект; проект `.lscapeproj`; командная строка; окно PySide6;
+- 21 автотест (единицы и масштаб, правила, проект, детерминизм, метрики качества по ТЗ, экспорт, окно), CI на Windows и Linux.
+
+Исходный прототип — в [`prototype/`](prototype/).
 
 ## Дорожная карта
 

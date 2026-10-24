@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "id": "org.landscape-renderer.profiles.ru-starter",
+  "version": "0.1.0",
+  "name": "Русский стартовый профиль (пример)",
+  "description": "Пример сопоставления для чертежа tests/fixtures/dxf/simple_site.dxf. Это не стандарт — скопируйте и настройте под своё бюро.",
+  "rules": [
+    {"id": "building", "priority": 100, "match": {"layer": ["ДОМ", "*ЗДАНИ*", "AR_*"], "entity": ["LWPOLYLINE", "POLYLINE"]}, "assign": {"class": "building", "height_m": 6.0}},
+    {"id": "building-hatch", "priority": 100, "match": {"layer": ["ДОМ"], "entity": ["HATCH"]}, "assign": {"class": "ignore"}},
+    {"id": "terrace", "priority": 100, "match": {"layer": ["ТЕРРАСА", "*МОЩЕНИ*"]}, "assign": {"class": "hard.terrace"}},
+    {"id": "deck", "priority": 100, "match": {"layer": ["НАСТИЛ"]}, "assign": {"class": "hard.deck"}},
+    {"id": "lawn", "priority": 100, "match": {"layer": ["*ГАЗОН*", "*LAWN*"]}, "assign": {"class": "ground.lawn"}},
+    {"id": "gravel", "priority": 100, "match": {"layer": ["*ГРАВИЙ*"]}, "assign": {"class": "ground.gravel"}},
+    {"id": "pond", "priority": 100, "match": {"layer": ["ВОДО*", "*ПРУД*"]}, "assign": {"class": "water.pond"}},
+    {"id": "stones", "priority": 110, "match": {"entity": ["INSERT"], "block": ["ПЛИТА_ШАГ"]}, "assign": {"class": "hard.stone"}},
+    {"id": "boulders", "priority": 100, "match": {"layer": ["КАМНИ"]}, "assign": {"class": "rock.boulder"}},
+    {"id": "beds", "priority": 100, "match": {"layer": ["ЦВ_*"], "entity": ["LWPOLYLINE", "POLYLINE", "HATCH"]}, "assign": {"class": "planting.bed", "plant_from_layer_suffix": true}},
+    {"id": "tree", "priority": 120, "match": {"entity": ["INSERT"], "block": ["ДЕРЕВО", "TREE*"]}, "assign": {"class": "vegetation.tree.deciduous", "plant_from_attribute": "ВИД", "diameter_from_attribute": "D", "diameter_unit": "m"}},
+    {"id": "conifer", "priority": 120, "match": {"entity": ["INSERT"], "block": ["ХВОЙНОЕ", "CONIFER*"]}, "assign": {"class": "vegetation.tree.conifer", "plant_from_attribute": "ВИД", "diameter_from_attribute": "D", "diameter_unit": "m"}},
+    {"id": "juniper", "priority": 120, "match": {"entity": ["INSERT"], "block": ["МОЖЖЕВЕЛЬНИК"]}, "assign": {"class": "vegetation.tree.columnar", "plant_from_attribute": "ВИД", "diameter_from_attribute": "D", "diameter_unit": "m"}},
+    {"id": "shrub", "priority": 120, "match": {"entity": ["INSERT"], "block": ["КУСТ", "SHRUB*"]}, "assign": {"class": "vegetation.shrub", "plant_from_attribute": "ВИД", "diameter_from_attribute": "D", "diameter_unit": "m"}},
+    {"id": "hedge", "priority": 100, "match": {"layer": ["ЖИВАЯ_ИЗГОРОДЬ", "*ИЗГОРОД*"]}, "assign": {"class": "vegetation.hedge", "width_from": "const_width", "height_m": 1.6}},
+    {"id": "maf", "priority": 100, "match": {"layer": ["МАФ"]}, "assign": {"class": "maf", "height_m": 0.45}},
+    {"id": "furniture", "priority": 100, "match": {"layer": ["МЕБЕЛЬ"]}, "assign": {"class": "furniture", "height_m": 0.75}},
+    {"id": "boundary", "priority": 100, "match": {"layer": ["ГРАНИЦА"]}, "assign": {"class": "boundary"}},
+    {"id": "text", "priority": 100, "match": {"layer": ["ТЕКСТ"], "entity": ["TEXT", "MTEXT"]}, "assign": {"class": "annotation"}},
+    {"id": "status-remove", "priority": 200, "match": {"layer": ["*_ДЕМОНТАЖ", "*_REMOVE"]}, "assign": {"status": "remove"}},
+    {"id": "status-new", "priority": 200, "match": {"attributes": {"СТАТУС": "нов*"}}, "assign": {"status": "new"}},
+    {"id": "status-remove-attr", "priority": 200, "match": {"attributes": {"СТАТУС": "удал*"}}, "assign": {"status": "remove"}}
+  ]
+}
